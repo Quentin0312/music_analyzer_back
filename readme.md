@@ -1,3 +1,5 @@
+`flask --app main run --debug`
+
 # Docker
 
 `docker build -t s11 .`
