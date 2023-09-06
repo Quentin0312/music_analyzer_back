@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker run -d -p 56733:80 --name s11dev -v .:/app s11
+# docker run -d -p 56733:80 --name s11dev -v .:/app s11
+
+flask --app main run --debug
