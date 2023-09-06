@@ -2,10 +2,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
+@app.route('/predict', methods=['POST'])
+def predict_genre():
     return 'Index Page'
 
-@app.route('/hello')
+@app.route('/train')
 def hello():
     return 'Hello, World'
