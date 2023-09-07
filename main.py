@@ -7,6 +7,7 @@ from my_code.var import column_names, genre_mapping
 from my_code.model import MusicClassifier, predict
 
 from typing import Union
+import time
 
 app = FastAPI()
 # TODO: Rename things
@@ -22,8 +23,10 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
+# Test with no 3 sec cuting
 @app.post("/predict")
 def prediction(audio: UploadFile):
+    beginning = time.time()
     # Preprocessing
     dfs = preprocess_data(
         scaler_path="./resources/trained_standard_scaler.pkl",
@@ -42,4 +45,4 @@ def prediction(audio: UploadFile):
     # Predict
     result = predict(my_model, dfs, genre_mapping)
 
-    return {"Prédiction => ": result}
+    return {"Prédiction => ": result, "prediction time": time.time() - beginning}
