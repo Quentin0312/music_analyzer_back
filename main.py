@@ -23,7 +23,7 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-# Test with no 3 sec cuting
+# TODO: Test with no 3 sec cuting
 @app.post("/predict")
 def prediction(audio: UploadFile):
     beginning = time.time()
