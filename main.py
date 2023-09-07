@@ -2,9 +2,9 @@ from fastapi import FastAPI, UploadFile
 
 import torch
 
+from my_code.model import MusicClassifier, predict
 from my_code.preprocessing import preprocess_data
 from my_code.var import column_names, genre_mapping
-from my_code.model import MusicClassifier, predict
 
 import time
 
