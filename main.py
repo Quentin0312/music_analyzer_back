@@ -6,24 +6,12 @@ from my_code.preprocessing import preprocess_data
 from my_code.var import column_names, genre_mapping
 from my_code.model import MusicClassifier, predict
 
-from typing import Union
 import time
 
-app = FastAPI()
 # TODO: Rename things
+app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-# TODO: Test with no 3 sec cuting
 @app.post("/predict")
 def prediction(audio: UploadFile):
     beginning = time.time()
