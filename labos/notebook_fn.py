@@ -181,10 +181,10 @@ def get_data(df: pd.DataFrame, device: str):
     )
     y = torch.from_numpy(df["label"].to_numpy()).type(torch.long).to(device)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    return X_train, X_test, y_train, y_test
+    # X_train, X_test, y_train, y_test = train_test_split(
+    #     X, y, test_size=0.2, random_state=42
+    # )
+    return X, y
 
 
 def training_loop(
@@ -200,7 +200,9 @@ def training_loop(
     loss_fn, optimizer = get_training_fns(model)
 
     # Prepare data
-    X_train, X_test, y_train, y_test = get_data(df, device)
+    X_train, y_train = get_data(df, device)
+
+    # ! Get test set !
 
     precision = {}
     recall = {}

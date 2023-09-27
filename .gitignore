@@ -2,3 +2,4 @@
 .venv
 __pycache__
 drive_dataset
+test_set
