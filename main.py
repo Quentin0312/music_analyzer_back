@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 import torch
 
@@ -10,6 +11,14 @@ import time
 
 # TODO: Rename things
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/predict")
@@ -33,4 +42,4 @@ def prediction(audio: UploadFile):
     # Predict
     result = predict(my_model, dfs, genre_mapping)
 
-    return {"Prédiction => ": result, "prediction time": time.time() - beginning}
+    return {"predicted": result, "prediction_time": time.time() - beginning}
