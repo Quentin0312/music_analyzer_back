@@ -99,3 +99,32 @@ def preprocess_data(
         dfs.append(df)
 
     return dfs
+
+
+def fast_preprocess_data(
+    scaler_path: str, uploaded_audio: UploadFile, column_names: List[str]
+) -> List[pd.DataFrame]:
+    scaler = joblib.load(scaler_path)
+    dfs = []
+    segments = get_3sec_sample(uploaded_audio)
+
+    lighten_segments = []
+    for i in range(len(segments)):
+        if i % 3 == 0:
+            lighten_segments.append(segments[i])
+
+    print("===============>", len(segments), " / ", len(lighten_segments))
+
+    # for audio in segments:
+    for audio in lighten_segments:
+        # Perform audio feature extraction
+        features = audio_pipeline(audio)
+
+        # Scale the features using the loaded scaler
+        scaled_features = scaler.transform([features])
+
+        # Create a DataFrame
+        df = pd.DataFrame(scaled_features, columns=column_names)
+        dfs.append(df)
+
+    return dfs
