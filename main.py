@@ -66,4 +66,7 @@ def fast_prediction(audio: UploadFile):
     # Predict
     result = predict(my_model, dfs, genre_mapping)
 
-    return {"predicted": result, "prediction_time": time.time() - beginning}
+    return {
+        "predicted": result,
+        "prediction_time": time.time() - beginning,
+    }  # ajouter raw result

@@ -139,12 +139,14 @@ def display_training_metrics(
     plt.show()
 
 
-def plot_accuracy_evolution(values: List[float]):
+def plot_accuracy_evolution(real_acc: List[float], kept_acc: List[float]):
     # TODO: Refactor
-    plt.plot(values)
+    plt.plot(real_acc, label="Training acc")
+    plt.plot(kept_acc, label="Kept acc")
     plt.title("Accuracy evolution through trainings")
     plt.xlabel("Trainings")
     plt.ylabel("Accuracy")
+    plt.legend()
     plt.show()
 
 
@@ -188,8 +190,7 @@ def get_data(df: pd.DataFrame, device: str):
 
 
 def training_loop(
-    MusicClassifier: MusicClassifier,
-    df: pd.DataFrame,
+    MusicClassifier: MusicClassifier, df: pd.DataFrame, test_df: pd.DataFrame
 ):
     # Device agnostic code
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -203,6 +204,7 @@ def training_loop(
     X_train, y_train = get_data(df, device)
 
     # ! Get test set !
+    X_test, y_test = get_data(df=test_df, device=device)
 
     precision = {}
     recall = {}
