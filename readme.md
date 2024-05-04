@@ -22,6 +22,19 @@ pip install -r requirements.txt
 
 TODO: Add link to drive-dataset and test_set used !
 
+# Packages
+
+## Needed for deployement
+
+- fastapi
+- torch
+- pandas
+- librosa
+
+And their dependancies !
+
+> `requirements.txt` represent deployement_requirements.txt
+
 # Untracked files
 
 Missing folder `./labos/drive_dataset` should contain :
