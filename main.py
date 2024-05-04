@@ -28,6 +28,9 @@ app.add_middleware(
 )
 
 # ! TODO: Use a safer way to store this data
+"""
+use the cache (cachetools) TRY THIS !
+"""
 data_dict = {}
 
 
@@ -73,6 +76,7 @@ def get_pred_results(key):
     return data_dict[key]
 
 
+# ! TODO: Adapt using background task
 @app.post("/onnx_fast_predict")
 def prediction(audio: UploadFile):
     print(str(audio))
