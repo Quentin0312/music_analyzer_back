@@ -9,8 +9,8 @@ With arch, use packages `pyenv` and `pyenv-virtualenv`.
 ```sh
 pyenv install 3.9.19
 pyenv global 3.9.19
-pyenv virtualenv .env_bs11
-source ~/.pyenv/versions/3.9.19/envs/.env_bs11/bin/activate
+pyenv virtualenv .env_bs11_onnx
+source ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -27,9 +27,12 @@ TODO: Add link to drive-dataset and test_set used !
 ## Needed for deployement
 
 - fastapi
-- torch
 - pandas
 - librosa
+
+### Developpement
+
+`torch` is also needed for the dev environnement
 
 And their dependancies !
 
