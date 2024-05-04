@@ -27,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ! TODO: Use a safer way to store this data
 data_dict = {}
 
 
