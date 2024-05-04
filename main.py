@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import torch
 
-from my_code.model import MusicClassifier, predict
-from my_code.preprocessing import fast_preprocess_data, preprocess_data
-from my_code.var import column_names, genre_mapping
+from source.model import MusicClassifier, predict
+from source.preprocessing import fast_preprocess_data, preprocess_data
+from source.var import column_names, genre_mapping
 
 import time
 

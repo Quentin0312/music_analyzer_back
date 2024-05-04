@@ -1,4 +1,6 @@
-# Install developpement environnement
+# Developpement environnement
+
+## Installation
 
 > python version : 3.9.19 ?
 
@@ -9,10 +11,10 @@ pyenv install 3.9.19
 pyenv global 3.9.19
 pyenv virtualenv .env_bs11
 source ~/.pyenv/versions/3.9.19/envs/.env_bs11/bin/activate
-pip install -r qrequirements.txt
+pip install -r requirements.txt
 ```
 
-# Start in developpement environnement
+## Start
 
 ```sh
 ./start.sh
