@@ -67,6 +67,11 @@ def get_pred_results():
     return data_dict
 
 
+@app.get("/data/{key}")
+def get_pred_results(key):
+    return data_dict[key]
+
+
 @app.post("/onnx_fast_predict")
 def prediction(audio: UploadFile):
     print(str(audio))

@@ -1,12 +1,4 @@
-TO deal with timeout issue :
-
-check last message of chatgpt discussion
-check task id to check if there is no issue about getting the appropriate result for the appropiate person !
-
-https://devcenter.heroku.com/articles/request-timeout
-"The timeout value is not configurable. If your server requires longer than 30 seconds to complete a given request, we recommend moving that work to a background task or worker to periodically ping your server to see if the processing request has been finished. This pattern frees your web processes up to do more work, and decreases overall application response times."
-
-OR websockets ?
+> To create the ONNX file (.mar) use the commented create_onnx route
 
 # Developpement environnement
 
