@@ -1,4 +1,22 @@
-`uvicorn main:app --reload`
+# Install developpement environnement
+
+> python version : 3.9.19 ?
+
+With arch, use packages `pyenv` and `pyenv-virtualenv`.
+
+```sh
+pyenv install 3.9.19
+pyenv global 3.9.19
+pyenv virtualenv .env_bs11
+source ~/.pyenv/versions/3.9.19/envs/.env_bs11/bin/activate
+pip install -r qrequirements.txt
+```
+
+# Start in developpement environnement
+
+```sh
+./start.sh
+```
 
 TODO: Add link to drive-dataset and test_set used !
 
