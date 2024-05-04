@@ -3,6 +3,9 @@ import io
 from io import BytesIO
 from datetime import datetime
 
+# ! OR MAYBE USE websockets is better !!!
+# https://fastapi.tiangolo.com/advanced/websockets/
+
 from fastapi import FastAPI, UploadFile, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
