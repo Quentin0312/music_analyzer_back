@@ -1,3 +1,4 @@
+from io import BytesIO
 import librosa
 import numpy as np
 import pandas as pd
@@ -10,9 +11,10 @@ from fastapi import UploadFile
 # TODO: Vérifier les typages
 
 
-def get_3sec_sample(uploaded_audio: UploadFile) -> List[np.ndarray]:
+def get_3sec_sample(uploaded_audio: BytesIO) -> List[np.ndarray]:
+
     audio, sample_rate = librosa.load(
-        uploaded_audio.file,
+        uploaded_audio,
         sr=None,
     )
 
@@ -81,7 +83,7 @@ def audio_pipeline(audio: np.ndarray) -> List[float]:
 
 
 def preprocess_data(
-    scaler_path: str, uploaded_audio: UploadFile, column_names: List[str]
+    scaler_path: str, uploaded_audio: BytesIO, column_names: List[str]
 ) -> List[pd.DataFrame]:
     scaler = joblib.load(scaler_path)
     dfs = []
