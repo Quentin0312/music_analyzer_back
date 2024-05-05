@@ -14,6 +14,8 @@ from source.var import column_names, genre_mapping
 # TODO: Rename things
 app = FastAPI()
 
+# TODO : Find a way to handle file > 15Mo
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
