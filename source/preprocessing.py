@@ -1,3 +1,4 @@
+import io
 import librosa
 import numpy as np
 import pandas as pd
@@ -10,9 +11,9 @@ from fastapi import UploadFile
 # TODO: Vérifier les typages
 
 
-def get_3sec_sample(uploaded_audio: UploadFile) -> List[np.ndarray]:
+def get_3sec_sample(uploaded_audio: bytes) -> List[np.ndarray]:
     audio, sample_rate = librosa.load(
-        uploaded_audio.file,
+        io.BytesIO(uploaded_audio),
         sr=None,
     )
 
@@ -81,7 +82,7 @@ def audio_pipeline(audio: np.ndarray) -> List[float]:
 
 
 def preprocess_data(
-    scaler_path: str, uploaded_audio: UploadFile, column_names: List[str]
+    scaler_path: str, uploaded_audio: bytes, column_names: List[str]
 ) -> List[pd.DataFrame]:
     scaler = joblib.load(scaler_path)
     dfs = []
@@ -102,7 +103,7 @@ def preprocess_data(
 
 
 def fast_preprocess_data(
-    scaler_path: str, uploaded_audio: UploadFile, column_names: List[str]
+    scaler_path: str, uploaded_audio: bytes, column_names: List[str]
 ) -> List[pd.DataFrame]:
     scaler = joblib.load(scaler_path)
     dfs = []
@@ -113,7 +114,7 @@ def fast_preprocess_data(
         if i % 3 == 0:
             lighten_segments.append(segments[i])
 
-    print("===============>", len(segments), " / ", len(lighten_segments))
+    # print("===============>", len(segments), " / ", len(lighten_segments))
 
     # for audio in segments:
     for audio in lighten_segments:

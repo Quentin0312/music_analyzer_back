@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
 # import torch
@@ -23,6 +23,48 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.websocket("/ws/fast")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_bytes()
+
+        # Preprocessing
+        dfs = fast_preprocess_data(
+            scaler_path="./resources/trained_standard_scaler.pkl",
+            column_names=column_names,
+            uploaded_audio=data,
+        )
+
+        onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
+
+        # Predict
+        result = onnx_predict(onnx_session, dfs, genre_mapping)
+
+        await websocket.send_text(f"Done : {result}")
+
+
+@app.websocket("/ws/complete")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_bytes()
+
+        # Preprocessing
+        dfs = preprocess_data(
+            scaler_path="./resources/trained_standard_scaler.pkl",
+            column_names=column_names,
+            uploaded_audio=data,
+        )
+
+        onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
+
+        # Predict
+        result = onnx_predict(onnx_session, dfs, genre_mapping)
+
+        await websocket.send_text(f"Done : {result}")
 
 
 # ! DO NOT DELETE ----
@@ -67,25 +109,45 @@ Notes :
 # ! DO NOT DELETE ----
 
 
-@app.post("/onnx_predict")
-def prediction(audio: UploadFile):
-    beginning = time.time()
+# @app.post("/onnx_predict")
+# def prediction(audio: UploadFile):
+#     beginning = time.time()
 
-    # Preprocessing
-    dfs = preprocess_data(
-        scaler_path="./resources/trained_standard_scaler.pkl",
-        column_names=column_names,
-        uploaded_audio=audio,
-    )
+#     # Preprocessing
+#     dfs = preprocess_data(
+#         scaler_path="./resources/trained_standard_scaler.pkl",
+#         column_names=column_names,
+#         uploaded_audio=audio,
+#     )
 
-    onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
+#     onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
 
-    # Predict
-    result = onnx_predict(onnx_session, dfs, genre_mapping)
+#     # Predict
+#     result = onnx_predict(onnx_session, dfs, genre_mapping)
 
-    return {"predicted": result, "prediction_time": time.time() - beginning}
+#     return {"predicted": result, "prediction_time": time.time() - beginning}
 
 
+# @app.post("/onnx_fast_predict")
+# def prediction(audio: UploadFile):
+#     beginning = time.time()
+
+#     # Preprocessing
+#     dfs = fast_preprocess_data(
+#         scaler_path="./resources/trained_standard_scaler.pkl",
+#         column_names=column_names,
+#         uploaded_audio=audio,
+#     )
+
+#     onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
+
+#     # Predict
+#     result = onnx_predict(onnx_session, dfs, genre_mapping)
+
+#     return {"predicted": result, "prediction_time": time.time() - beginning}
+
+
+# ! DO NOTE DELETE
 # @app.post("/predict")
 # def prediction(audio: UploadFile):
 #     beginning = time.time()
@@ -108,25 +170,6 @@ def prediction(audio: UploadFile):
 #     result = predict(my_model, dfs, genre_mapping)
 
 #     return {"predicted": result, "prediction_time": time.time() - beginning}
-
-
-@app.post("/onnx_fast_predict")
-def prediction(audio: UploadFile):
-    beginning = time.time()
-
-    # Preprocessing
-    dfs = fast_preprocess_data(
-        scaler_path="./resources/trained_standard_scaler.pkl",
-        column_names=column_names,
-        uploaded_audio=audio,
-    )
-
-    onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
-
-    # Predict
-    result = onnx_predict(onnx_session, dfs, genre_mapping)
-
-    return {"predicted": result, "prediction_time": time.time() - beginning}
 
 
 # @app.post("/fast_predict")
