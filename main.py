@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, WebSocket
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
 # import torch
@@ -10,8 +10,6 @@ import numpy as np
 from source.model import onnx_predict
 from source.preprocessing import fast_preprocess_data, preprocess_data
 from source.var import column_names, genre_mapping
-
-import time
 
 # TODO: Rename things
 app = FastAPI()
@@ -25,6 +23,7 @@ app.add_middleware(
 )
 
 
+# TODO: Make only one route with a parameter in URL
 @app.websocket("/ws/fast")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -107,45 +106,6 @@ Notes :
 
 #     return {"done"}
 # ! DO NOT DELETE ----
-
-
-# @app.post("/onnx_predict")
-# def prediction(audio: UploadFile):
-#     beginning = time.time()
-
-#     # Preprocessing
-#     dfs = preprocess_data(
-#         scaler_path="./resources/trained_standard_scaler.pkl",
-#         column_names=column_names,
-#         uploaded_audio=audio,
-#     )
-
-#     onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
-
-#     # Predict
-#     result = onnx_predict(onnx_session, dfs, genre_mapping)
-
-#     return {"predicted": result, "prediction_time": time.time() - beginning}
-
-
-# @app.post("/onnx_fast_predict")
-# def prediction(audio: UploadFile):
-#     beginning = time.time()
-
-#     # Preprocessing
-#     dfs = fast_preprocess_data(
-#         scaler_path="./resources/trained_standard_scaler.pkl",
-#         column_names=column_names,
-#         uploaded_audio=audio,
-#     )
-
-#     onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
-
-#     # Predict
-#     result = onnx_predict(onnx_session, dfs, genre_mapping)
-
-#     return {"predicted": result, "prediction_time": time.time() - beginning}
-
 
 # ! DO NOTE DELETE
 # @app.post("/predict")
