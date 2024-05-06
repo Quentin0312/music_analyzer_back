@@ -67,7 +67,7 @@ import pandas as pd
 #     return prediction
 
 
-# # TODO: Verify it works properly
+# * Carreful => Blackbox
 def softmax(z):
     assert len(z.shape) == 2
 
