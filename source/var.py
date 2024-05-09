@@ -1,4 +1,6 @@
-# TODO: Find and do the best practice for this funny case
+""" TODO: Find and do the best practice for this funny case
+    Use enum ?
+"""
 
 genre_mapping = {
     0: "Blues",

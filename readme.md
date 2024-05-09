@@ -1,18 +1,10 @@
-TO deal with timeout issue :
-
-check last message of chatgpt discussion
-check task id to check if there is no issue about getting the appropriate result for the appropiate person !
-
-https://devcenter.heroku.com/articles/request-timeout
-"The timeout value is not configurable. If your server requires longer than 30 seconds to complete a given request, we recommend moving that work to a background task or worker to periodically ping your server to see if the processing request has been finished. This pattern frees your web processes up to do more work, and decreases overall application response times."
-
-OR websockets ?
+TODO: Add link to drive-dataset and test_set used !
 
 # Developpement environnement
 
 ## Installation
 
-> python version : 3.9.19 ?
+> python version : 3.9.19
 
 With arch, use packages `pyenv` and `pyenv-virtualenv`.
 
@@ -30,7 +22,32 @@ pip install -r requirements.txt
 ./start.sh
 ```
 
-TODO: Add link to drive-dataset and test_set used !
+## Test
+
+### Installation
+
+New file `.git/hooks/pre-push` is to create to run test before push to heroku remote (and deploying)
+
+```sh
+#!/bin/bash
+
+remote="$1"
+
+if [[ "$remote" == *"heroku"* ]]; then
+    source ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/python
+
+    # Run tests
+    python -m unittest discover -v
+    test_result=$?
+
+    exit $test_result
+fi
+
+# Allow push without tests if not to heroku remote
+exit 0
+```
+
+To run : `./test.sh`
 
 # Packages
 

@@ -1,12 +1,13 @@
 from enum import Enum
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import onnxruntime
 
 from source.model import onnx_predict
 from source.preprocessing import fast_preprocess_data, preprocess_data
-from source.var import column_names, genre_mapping
+
+from source import var
 
 
 # TODO: Rename things
@@ -39,27 +40,70 @@ async def websocket_endpoint(
     websocket: WebSocket, preprocessing_type: PreprocessingType
 ):
     await websocket.accept()
-    while True:
-        data = await websocket.receive_bytes()
+    try:
+        while True:
+            data = await websocket.receive_bytes()
 
-        # TODO: Redondancy => put the arg (fast or complete) to preprocess_data()
-        # Preprocessing
-        if preprocessing_type == PreprocessingType.fast:
-            dfs = fast_preprocess_data(
-                scaler_path="./resources/trained_standard_scaler.pkl",
-                column_names=column_names,
-                uploaded_audio=data,
-            )
-        else:
-            dfs = preprocess_data(
-                scaler_path="./resources/trained_standard_scaler.pkl",
-                column_names=column_names,
-                uploaded_audio=data,
-            )
+            # TODO: Redondancy => put the arg (fast or complete) to preprocess_data()
+            # Preprocessing
+            if preprocessing_type == PreprocessingType.fast:
+                dfs = fast_preprocess_data(
+                    scaler_path="./resources/trained_standard_scaler.pkl",
+                    column_names=var.column_names,
+                    uploaded_audio=data,
+                )
+            else:
+                dfs = preprocess_data(
+                    scaler_path="./resources/trained_standard_scaler.pkl",
+                    column_names=var.column_names,
+                    uploaded_audio=data,
+                )
 
-        onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
+            onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
 
-        # Predict
-        result = onnx_predict(onnx_session, dfs, genre_mapping)
+            # Predict
+            result = onnx_predict(onnx_session, dfs, var.genre_mapping)
 
-        await websocket.send_text(result)
+            await websocket.send_text(result)
+    except WebSocketDisconnect as e:
+        print(f"WebSocket disconnected: {e}")
+
+
+""" TODO: Move into another file
+    Routing needs to be done !
+"""
+# ! DO NOT DELETE ----
+# Only use locally, to move to another branch / repo
+"""
+This is only used locally to create the ONNX model (.mar) to
+deploy without the need of pytorch dependancy
+Notes :
+- Needs pytorch installed to work
+- torch.Tensor(dfs[0].to_numpy()) is a dummy data for it to
+    know what format is the input
+"""
+# @app.post("/createonnx")
+# def prediction(audio: UploadFile):
+#     # beginning = time.time()
+#     # Preprocessing
+#     dfs = preprocess_data(
+#         scaler_path="./resources/trained_standard_scaler.pkl",
+#         column_names=column_names,
+#         uploaded_audio=audio,
+#     )
+#     # Load model
+#     my_model = MusicClassifier(input_features=55, output_features=10)
+#     my_model.load_state_dict(
+#         torch.load(
+#             f="./resources/actual_model_fast.pth", map_location=torch.device("cpu")
+#         )
+#     )
+#     my_model.eval()
+#     torch.onnx.export(
+#         my_model,
+#         torch.Tensor(dfs[0].to_numpy()),
+#         "./resources/model.onnx",
+#         verbose=True,
+#     )
+#     return {"done"}
+# ! DO NOT DELETE ----
