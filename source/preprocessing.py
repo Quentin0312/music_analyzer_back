@@ -82,6 +82,16 @@ def audio_pipeline(audio: np.ndarray) -> List[float]:
     return features
 
 
+def get_30_percent(segments: List[np.ndarray]) -> List[np.ndarray]:
+    lighten_segments: List[np.ndarray] = []
+
+    for i in range(len(segments)):
+        if i % 3 == 0:
+            lighten_segments.append(segments[i])
+
+    return lighten_segments
+
+
 def preprocess_data(
     scaler_path: str, uploaded_audio: bytes, preprocessing_type: PreprocessingType
 ) -> List[pd.DataFrame]:
@@ -89,13 +99,8 @@ def preprocess_data(
     dfs = []
     segments = get_3sec_sample(uploaded_audio)
 
-    # TODO: Refactor !
     if preprocessing_type == PreprocessingType.fast:
-        lighten_segments = []
-        for i in range(len(segments)):
-            if i % 3 == 0:
-                lighten_segments.append(segments[i])
-        segments = lighten_segments
+        segments = get_30_percent(segments)
 
     for audio in segments:
         # Perform audio feature extraction
