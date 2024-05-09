@@ -6,7 +6,8 @@ import pandas as pd
 import joblib
 from typing import List
 
-from fastapi import UploadFile
+from . import var
+from .var import PreprocessingType
 
 # TODO: Vérifier les typages
 
@@ -81,13 +82,20 @@ def audio_pipeline(audio: np.ndarray) -> List[float]:
     return features
 
 
-# TODO: column_names no need to be passed in parameters !
 def preprocess_data(
-    scaler_path: str, uploaded_audio: bytes, column_names: List[str]
+    scaler_path: str, uploaded_audio: bytes, preprocessing_type: PreprocessingType
 ) -> List[pd.DataFrame]:
     scaler = joblib.load(scaler_path)
     dfs = []
     segments = get_3sec_sample(uploaded_audio)
+
+    # TODO: Refactor !
+    if preprocessing_type == PreprocessingType.fast:
+        lighten_segments = []
+        for i in range(len(segments)):
+            if i % 3 == 0:
+                lighten_segments.append(segments[i])
+        segments = lighten_segments
 
     for audio in segments:
         # Perform audio feature extraction
@@ -97,38 +105,7 @@ def preprocess_data(
         scaled_features = scaler.transform([features])
 
         # Create a DataFrame
-        df = pd.DataFrame(scaled_features, columns=column_names)
-        dfs.append(df)
-
-    return dfs
-
-
-# TODO : Refactor with preprocess_data
-#! don't forget to update commented code or fix that first !
-def fast_preprocess_data(
-    scaler_path: str, uploaded_audio: bytes, column_names: List[str]
-) -> List[pd.DataFrame]:
-    scaler = joblib.load(scaler_path)
-    dfs = []
-    segments = get_3sec_sample(uploaded_audio)
-
-    lighten_segments = []
-    for i in range(len(segments)):
-        if i % 3 == 0:
-            lighten_segments.append(segments[i])
-
-    # print("===============>", len(segments), " / ", len(lighten_segments))
-
-    # for audio in segments:
-    for audio in lighten_segments:
-        # Perform audio feature extraction
-        features = audio_pipeline(audio)
-
-        # Scale the features using the loaded scaler
-        scaled_features = scaler.transform([features])
-
-        # Create a DataFrame
-        df = pd.DataFrame(scaled_features, columns=column_names)
+        df = pd.DataFrame(scaled_features, columns=var.column_names)
         dfs.append(df)
 
     return dfs

@@ -1,18 +1,16 @@
-from enum import Enum
-
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import onnxruntime
 
 from source.model import onnx_predict
-from source.preprocessing import fast_preprocess_data, preprocess_data
 
-from source import var
-
+from source import preprocessing
+from source.var import PreprocessingType
 
 # TODO: Rename things
 app = FastAPI()
 
+# TODO: Do the minimal to secure access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,12 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-class PreprocessingType(Enum):
-    fast = "fast"
-    complete = "complete"
-
 
 """
 TODO : Change prediction execution flow
@@ -44,25 +36,18 @@ async def websocket_endpoint(
         while True:
             data = await websocket.receive_bytes()
 
-            # TODO: Redondancy => put the arg (fast or complete) to preprocess_data()
             # Preprocessing
-            if preprocessing_type == PreprocessingType.fast:
-                dfs = fast_preprocess_data(
-                    scaler_path="./resources/trained_standard_scaler.pkl",
-                    column_names=var.column_names,
-                    uploaded_audio=data,
-                )
-            else:
-                dfs = preprocess_data(
-                    scaler_path="./resources/trained_standard_scaler.pkl",
-                    column_names=var.column_names,
-                    uploaded_audio=data,
-                )
+            dfs = preprocessing.preprocess_data(
+                scaler_path="./resources/trained_standard_scaler.pkl",
+                uploaded_audio=data,
+                preprocessing_type=preprocessing_type,
+            )
 
+            # Load model
             onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
 
             # Predict
-            result = onnx_predict(onnx_session, dfs, var.genre_mapping)
+            result = onnx_predict(onnx_session, dfs)
 
             await websocket.send_text(result)
     except WebSocketDisconnect as e:
@@ -88,8 +73,8 @@ Notes :
 #     # Preprocessing
 #     dfs = preprocess_data(
 #         scaler_path="./resources/trained_standard_scaler.pkl",
-#         column_names=column_names,
 #         uploaded_audio=audio,
+#         preprocessing_type=PreprocesingType.complete,
 #     )
 #     # Load model
 #     my_model = MusicClassifier(input_features=55, output_features=10)

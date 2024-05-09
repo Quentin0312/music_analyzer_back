@@ -1,13 +1,13 @@
 # from torch import nn
 # import torch
 
-import numpy as np
-
-from onnxruntime import InferenceSession
-
 from typing import List
 
+import numpy as np
 import pandas as pd
+from onnxruntime import InferenceSession
+
+from . import var
 
 # ! DELETE NOTHING
 # ! DO NOT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -82,8 +82,6 @@ def softmax(z):
 def onnx_predict(
     onnx_session: InferenceSession,
     dfs: List[pd.DataFrame],
-    # TODO : No need to be passed into parameters !
-    genre_mapping: dict[int, str],
 ) -> str:
     # model.eval()
 
@@ -101,7 +99,7 @@ def onnx_predict(
         y_pred_list.sort()
         y_pred = y_softmax[0].tolist().index(y_pred_list[-1])
 
-        class_predictions.append(genre_mapping[y_pred])
+        class_predictions.append(var.genre_mapping[y_pred])
 
     unique_values = set(class_predictions)
     actual_best = 0

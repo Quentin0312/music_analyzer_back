@@ -2,6 +2,14 @@
     Use enum ?
 """
 
+from enum import Enum
+
+
+class PreprocessingType(Enum):
+    fast = "fast"
+    complete = "complete"
+
+
 genre_mapping = {
     0: "Blues",
     1: "Classical",
