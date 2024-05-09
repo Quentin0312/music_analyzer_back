@@ -34,10 +34,8 @@ New file `.git/hooks/pre-push` is to create to run test before push to heroku re
 remote="$1"
 
 if [[ "$remote" == *"heroku"* ]]; then
-    source ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/python
+    ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/python -m unittest discover -v
 
-    # Run tests
-    python -m unittest discover -v
     test_result=$?
 
     exit $test_result
