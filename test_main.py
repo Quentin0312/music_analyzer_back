@@ -1,9 +1,11 @@
+import time
+
 import unittest
 from fastapi.testclient import TestClient
+
 from main import app
 
 
-# TODO: Also test response time !
 class TestWebSocket(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app)
@@ -11,6 +13,7 @@ class TestWebSocket(unittest.TestCase):
 
     # TODO: Refactor
     def test_websocket_complete_analysis(self):
+        beginning = time.time()
 
         with open(self.test_audio_file_location, "rb") as audio_file:
             test_audio_file = audio_file.read()
@@ -19,10 +22,12 @@ class TestWebSocket(unittest.TestCase):
                 websocket.send_bytes(test_audio_file)
                 data = websocket.receive_text()
 
+                assert (time.time() - beginning) < 60
                 assert data == "Hiphop"
 
     # TODO: Refactor
     def test_websocket_fast_analysis(self):
+        beginning = time.time()
 
         with open(self.test_audio_file_location, "rb") as audio_file:
             test_audio_file = audio_file.read()
@@ -31,6 +36,7 @@ class TestWebSocket(unittest.TestCase):
                 websocket.send_bytes(test_audio_file)
                 data = websocket.receive_text()
 
+                assert (time.time() - beginning) < 30
                 assert data == "Jazz"
 
 
