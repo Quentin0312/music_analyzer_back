@@ -4,6 +4,8 @@ import numpy as np
 
 from typing import List
 
+# TODO: Vérifier les typages
+
 
 def get_3sec_sample(uploaded_audio: bytes) -> List[np.ndarray]:
     audio, sample_rate = librosa.load(
