@@ -4,8 +4,6 @@ import numpy as np
 
 from typing import List
 
-# TODO: Vérifier les typages
-
 
 def get_3sec_sample(uploaded_audio: bytes) -> List[np.ndarray]:
     audio, sample_rate = librosa.load(
@@ -15,7 +13,7 @@ def get_3sec_sample(uploaded_audio: bytes) -> List[np.ndarray]:
 
     segment_duration = 3  # Durée de chaque segment en secondes
     segment_length = int(sample_rate * segment_duration)
-    segments = []
+    segments: list[np.ndarray] = []
 
     # Découpage
     for i in range(0, len(audio), segment_length):
@@ -26,6 +24,7 @@ def get_3sec_sample(uploaded_audio: bytes) -> List[np.ndarray]:
 
 
 def audio_pipeline(audio: np.ndarray) -> List[float]:
+    # TODO: Specify type precisely
     features = []
 
     # Chromagram

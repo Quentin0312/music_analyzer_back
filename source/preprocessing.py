@@ -5,14 +5,13 @@ from typing import List
 from .var import PreprocessingType, column_names
 from .utils import preprocessing_utils
 
-# TODO: Vérifier les typages
-
 
 def preprocess_data(
     scaler_path: str, uploaded_audio: bytes, preprocessing_type: PreprocessingType
 ) -> List[pd.DataFrame]:
+    # TODO: Specify type precisely
     scaler = joblib.load(scaler_path)
-    dfs = []
+    dfs: list[pd.DataFrame] = []
     segments = preprocessing_utils.get_3sec_sample(uploaded_audio)
 
     if preprocessing_type == PreprocessingType.fast:

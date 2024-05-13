@@ -1,4 +1,3 @@
-import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import onnxruntime
 
@@ -8,7 +7,6 @@ from source import preprocessing
 from source.var import PreprocessingType
 from source.utils import websocket_utils
 
-# TODO: Rename things
 app = FastAPI()
 
 """
