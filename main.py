@@ -1,11 +1,7 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-import onnxruntime
+from starlette.routing import WebSocketRoute
+from fastapi import FastAPI
 
-from source.model import onnx_predict
-
-from source import preprocessing
-from source.var import PreprocessingType
-from source.utils import websocket_utils
+from source import controller
 
 app = FastAPI()
 
@@ -16,40 +12,15 @@ Instead of preprocess all and predict all
 """
 
 
-# TODO: Use try catch to send error message to front-end in case of error
-@app.websocket("/ws/{preprocessing_type}")
-async def websocket_endpoint(
-    websocket: WebSocket, preprocessing_type: PreprocessingType
-):
-    if not websocket_utils.is_connection_authorized(websocket):
-        return None
-
-    await websocket.accept()
-    try:
-        while True:
-            data = await websocket.receive_bytes()
-
-            # Preprocessing
-            dfs = preprocessing.preprocess_data(
-                scaler_path="./resources/trained_standard_scaler.pkl",
-                uploaded_audio=data,
-                preprocessing_type=preprocessing_type,
-            )
-
-            # Load model
-            onnx_session = onnxruntime.InferenceSession("./resources/model.onnx")
-
-            # Predict
-            result = onnx_predict(onnx_session, dfs)
-
-            await websocket.send_text(result)
-    except WebSocketDisconnect as e:
-        print(f"WebSocket disconnected: {e}")
+app.router.routes.append(
+    WebSocketRoute(
+        path="/ws/{preprocessing_type}",
+        endpoint=controller.websocket_endpoint,
+    )
+)
 
 
-""" TODO: Move into another file
-    Routing needs to be done !
-"""
+# TODO: Move into another file
 # ! DO NOT DELETE ----
 # Only use locally, to move to another branch / repo
 """
