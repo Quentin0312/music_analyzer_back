@@ -20,7 +20,7 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_bytes()
 
             # Preprocessing
-            log_utils.print_preprocessing_title()
+            log_utils.print_preprocessing_title(preprocessing_type)
             dfs = preprocessing.preprocess_data(
                 scaler_path="./resources/trained_standard_scaler.pkl",
                 uploaded_audio=data,

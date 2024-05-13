@@ -1,13 +1,21 @@
-def print_preprocessing_title():
-    print("#########################################")
+from ..var import PreprocessingType
+
+
+def print_preprocessing_title(preprocessing_type: PreprocessingType):
+    type_to_display = (
+        preprocessing_type
+        if preprocessing_type == "complete"
+        else "  " + preprocessing_type + "  "
+    )
+    print("\n#########################################")
     print("#                                       #")
-    print("#             PREPROCESSING             #")
+    print(f"#             PREPROCESSING   {type_to_display}  #")
     print("#                                       #")
     print("#########################################")
 
 
 def print_predicting_title():
-    print("#########################################")
+    print("\n#########################################")
     print("#                                       #")
     print("#            PREDICTING                 #")
     print("#                                       #")
@@ -15,7 +23,7 @@ def print_predicting_title():
 
 
 def print_job_done():
-    print("#########################################")
+    print("\n#########################################")
     print("#                                       #")
     print("#               DONE                    #")
     print("#                                       #")

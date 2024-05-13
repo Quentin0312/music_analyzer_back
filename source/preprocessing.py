@@ -14,7 +14,9 @@ def preprocess_data(
     dfs: list[pd.DataFrame] = []
     segments = preprocessing_utils.get_3sec_sample(uploaded_audio)
 
-    if preprocessing_type == PreprocessingType.fast:
+    # TODO: Fix Enum is not working
+    # if preprocessing_type == PreprocessingType.fast:
+    if preprocessing_type == "fast":
         segments = preprocessing_utils.get_30_percent(segments)
 
     for audio in segments:

@@ -5,6 +5,7 @@
 from enum import Enum
 
 
+# TODO: Fix Enum is not working
 class PreprocessingType(Enum):
     fast = "fast"
     complete = "complete"
