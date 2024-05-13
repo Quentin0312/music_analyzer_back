@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import onnxruntime
@@ -9,15 +10,6 @@ from source.var import PreprocessingType
 
 # TODO: Rename things
 app = FastAPI()
-
-# TODO: Do the minimal to secure access
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 """
 TODO : Change prediction execution flow
@@ -31,6 +23,22 @@ Instead of preprocess all and predict all
 async def websocket_endpoint(
     websocket: WebSocket, preprocessing_type: PreprocessingType
 ):
+    # TODO: Refacto and find a cleaner way to do
+    if not (
+        (
+            os.environ.get("DEVMODE") == 1
+            and websocket.headers.get("origin") == "http://localhost:3000"
+        )
+        or (
+            websocket.headers.get("origin")
+            == "https://s11-front-f89f0835e50e.herokuapp.com"
+        )
+    ):
+        pass
+    else:
+        print("Unauthorized access => ", websocket.headers.get("origin"))
+        return None
+
     await websocket.accept()
     try:
         while True:
