@@ -1,12 +1,12 @@
 import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
 import onnxruntime
 
 from source.model import onnx_predict
 
 from source import preprocessing
 from source.var import PreprocessingType
+from source.utils import websocket_utils
 
 # TODO: Rename things
 app = FastAPI()
@@ -23,20 +23,7 @@ Instead of preprocess all and predict all
 async def websocket_endpoint(
     websocket: WebSocket, preprocessing_type: PreprocessingType
 ):
-    # TODO: Refacto and find a cleaner way to do
-    if not (
-        (
-            os.environ.get("DEVMODE") == 1
-            and websocket.headers.get("origin") == "http://localhost:3000"
-        )
-        or (
-            websocket.headers.get("origin")
-            == "https://s11-front-f89f0835e50e.herokuapp.com"
-        )
-    ):
-        pass
-    else:
-        print("Unauthorized access => ", websocket.headers.get("origin"))
+    if not websocket_utils.is_connection_authorized(websocket):
         return None
 
     await websocket.accept()
