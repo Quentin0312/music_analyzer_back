@@ -8,7 +8,10 @@ app = FastAPI()
 """
 TODO : Change prediction execution flow
 Do loop(preprocess 3sec, predict and send)
-Instead of preprocess all and predict all 
+Instead of preprocess all and predict all
+To make that, library that use ASGI is not adapted (queuing/buffering) issues
+Instead use python WebSockets library :
+https://websockets.readthedocs.io/en/stable/index.html
 """
 
 
