@@ -11,8 +11,13 @@ With arch, use packages `pyenv` and `pyenv-virtualenv`.
 ```sh
 pyenv install 3.9.19
 pyenv global 3.9.19
-pyenv virtualenv .env_bs11_onnx
-source ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/activate
+```
+
+Installer le plugin pyenv-virtualenv : [pyenv/pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
+
+```sh
+pyenv virtualenv .env_music_analyzer_back_onnx
+source ~/.pyenv/versions/3.9.19/envs/.env_music_analyzer_back_onnx/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -34,7 +39,7 @@ New file `.git/hooks/pre-push` is to create to run test before push to heroku re
 remote="$1"
 
 if [[ "$remote" == *"heroku"* ]]; then
-    ~/.pyenv/versions/3.9.19/envs/.env_bs11_onnx/bin/python -m unittest discover -v
+    ~/.pyenv/versions/3.9.19/envs/.env_music_analyzer_back_onnx/bin/python -m unittest discover -v
 
     test_result=$?
 
@@ -46,6 +51,10 @@ exit 0
 ```
 
 To run : `./test.sh`
+
+# Deployement
+- Add heroku remote url to git : `heroku git:remote -a s11-front && git pull heroku`
+- Deploy : `git push heroku`
 
 # Packages
 
